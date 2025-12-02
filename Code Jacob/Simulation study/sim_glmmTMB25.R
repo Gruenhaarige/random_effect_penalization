@@ -3,7 +3,6 @@ require(lme4)
 require(glmmTMB)
 require(methods)
 
-# getMethod("getExponentialTerm", "bmerLassoDist")
 glmmTMB:::.valid_prior
 # version
 
