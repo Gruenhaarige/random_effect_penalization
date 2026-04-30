@@ -2,3 +2,10 @@
 .Rhistory
 .RData
 .Ruserdata
+R/r2.R
+debug_bondell.R
+debug_bondell_tb.R
+debug_glmm.R
+debug_glmm_test.R
+test_dims.R
+test_ident.R
