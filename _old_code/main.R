@@ -2,7 +2,7 @@ library(MASS)
 library(lme4)
 library(glmmLasso)
 
-source("functions.R")
+source("R/functions.R")
 
 ## Daten und Modelle erstellen 
 
