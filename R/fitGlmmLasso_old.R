@@ -284,7 +284,7 @@ fitGlmmLasso <- function(formula,
             } else{
               mse_mat[i,j] <- NA
             }
-          } else if(inherits(model$model, "glmmTMB")){
+          } else if(class(model$model) == "glmmTMB"){
             pred <- predict(model$model, newdata = test_data, type = "response",
                             allow.new.levels = TRUE)
             mse_mat[i,j] <- mean((test_data[[response_name]] - pred)^2,
@@ -342,7 +342,6 @@ fitGlmmLasso <- function(formula,
     LL <- numeric(n_lambda)
     n_nonzero_param <- numeric(n_lambda)
     test_data_list <- NULL
-    beta_list <- vector("list", n_lambda)
     
     for(i in seq_len(n_lambda)){
       pen <- lambda_seq[i]
@@ -364,7 +363,6 @@ fitGlmmLasso <- function(formula,
       
       LL[i] <- model$LL
       n_nonzero_param[i] <- model$nonzero
-      beta_list[[i]] <- model$beta
       
       if(i %% message_value == 0){
         message(i, " / ", n_lambda)
@@ -373,46 +371,25 @@ fitGlmmLasso <- function(formula,
     
     if(measure[1] == "BIC"){
       BIC <- -2 * LL + log(nrow(data)) * n_nonzero_param
-      opt_idx <- which.min(BIC)
-      if (length(opt_idx) == 0 || is.na(opt_idx)) {
-        warning("All BIC values were NA. Falling back to first lambda.")
-        opt_idx <- 1L
-      }
-      lambda_opt <- lambda_seq[opt_idx]
+      
+      lambda_opt <- lambda_seq[which.min(BIC)]
       overview <- data.frame(lambda = lambda_seq,
                              logLik = LL,
                              nonzero = n_nonzero_param,
                              BIC = BIC)
     } else{
       AIC <- -2 * LL + 2 * n_nonzero_param
-      opt_idx <- which.min(AIC)
-      if (length(opt_idx) == 0 || is.na(opt_idx)) {
-        warning("All AIC values were NA. Falling back to first lambda.")
-        opt_idx <- 1L
-      }
-      lambda_opt <- lambda_seq[opt_idx]
+      
+      lambda_opt <- lambda_seq[which.min(AIC)]
       overview <- data.frame(lambda = lambda_seq,
                              logLik = LL,
                              nonzero = n_nonzero_param,
                              AIC = AIC)
     }
-    
-    # Warm start: Retrieve estimated coefficients matching the optimal lambda
-    best_beta <- beta_list[[opt_idx]]
-    if (length(best_beta) > 1 || !is.na(best_beta)) {
-      final_start <- best_beta
-    } else {
-      final_start <- default_start
-    }
   }
   
   ##############################################################################
   # optimal model & output
-  
-  # Ensure we have a valid starting point
-  if (!exists("final_start") || is.null(final_start)) {
-    final_start <- default_start
-  }
   
   opt_model <- fitModel(formula = formula,
                         data = data,
@@ -423,7 +400,7 @@ fitGlmmLasso <- function(formula,
                         threshold = threshold,
                         # lme4_REML = lme4_REML,
                         max_iter = max_iter,
-                        start = final_start,
+                        start = default_start,
                         # LL_with_RE = LL_with_RE,
                         max_attempts = max_attempts[1])
   

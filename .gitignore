@@ -9,3 +9,6 @@ debug_glmm.R
 debug_glmm_test.R
 test_dims.R
 test_ident.R
+.DS_Store
+results/
+data/simulation_results_*.csv
