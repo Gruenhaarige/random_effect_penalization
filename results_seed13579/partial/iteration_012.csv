@@ -1,0 +1,4 @@
+"Iteration","Method","TPR","FPR","MSE","Random_TPR","Random_FPR","gamma_mspe","opt_lambda_fixed","opt_lambda_random","re_var_x2","re_var_x3","glmmTMB_signal_collapse","glmmTMB_collapsed_vars"
+12,"glmmTMB",1,1,0.00643522259012584,NA,NA,0.025073278681284,1.22508372483069,NA,NA,NA,FALSE,""
+12,"Lin",1,0,0.00856822055269154,1,0,0.0294872113769971,2.5,2.5,0,0,NA,NA
+12,"Bondell",1,0.4,0.00516394592788889,1,0.5,0.0242240062355502,0.4,0.4,0.000262033933633802,0,NA,NA

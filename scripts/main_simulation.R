@@ -11,7 +11,7 @@ source("R/generate_data.R")
 source("R/method_wrappers.R")
 
 # Toggle simulation mode: TRUE = fast Test Mode (2 sims), FALSE = Production Mode (100 sims)
-run_test_mode <- TRUE
+run_test_mode <- FALSE
 
 if (run_test_mode) {
   N_SIMS <- 1
@@ -23,7 +23,7 @@ if (run_test_mode) {
   slope <- 1
   sigma_eps <- 1
 } else {
-  N_SIMS <- 3
+  N_SIMS <- 50
   n <- 500
   p <- 8
   n_signals <- 3
@@ -146,6 +146,14 @@ run_one_iteration_timed <- function(i) {
     NA
   } else {
     any(abs(signal_coefs_glmmTMB) < 1e-3)
+  }
+  # TEMP diagnostic (not part of the validated pipeline): which signal
+  # variable(s) collapsed, for post-hoc breakdown reporting.
+  glmmTMB_collapsed_vars <- if (any(is.na(signal_coefs_glmmTMB))) {
+    NA_character_
+  } else {
+    collapsed <- names(signal_coefs_glmmTMB)[abs(signal_coefs_glmmTMB) < 1e-3]
+    if (length(collapsed) == 0) "" else paste(collapsed, collapse = ";")
   }
 
   # Lin method (BIC selection)
@@ -292,6 +300,7 @@ run_one_iteration_timed <- function(i) {
     re_var_x2 = c(re_var_x2_glmmTMB, re_var_x2_lin, re_var_x2_bondell),
     re_var_x3 = c(re_var_x3_glmmTMB, re_var_x3_lin, re_var_x3_bondell),
     glmmTMB_signal_collapse = c(glmmTMB_signal_collapse, NA, NA),
+    glmmTMB_collapsed_vars = c(glmmTMB_collapsed_vars, NA, NA),
     stringsAsFactors = FALSE
   )
 

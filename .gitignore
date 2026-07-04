@@ -11,4 +11,5 @@ test_dims.R
 test_ident.R
 .DS_Store
 results/
+data/simulation_results.csv
 data/simulation_results_*.csv
